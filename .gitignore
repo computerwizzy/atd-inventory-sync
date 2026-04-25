@@ -1,12 +1,47 @@
+# Secrets
 .env
+
+# Local directories
 __pycache__/
 *.pyc
 logs/
 feeds/
 scratch/
-shopify/*.csv
-shopify/*.json
-shopify/*.liquid
-!shopify/variant_redirect_snippet.liquid
 .claude/
 .gemini/
+
+# Ignore all data/media files
+*.csv
+*.xlsx
+*.xls
+*.json
+*.html
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.zip
+*.log
+
+# Allow GitHub Actions
+!.github/workflows/*.yml
+
+# Allow scripts and code
+!*.py
+!*.bat
+!*.sh
+
+# Exceptions for necessary frontend files
+!shopify/variant_redirect_snippet.liquid
+
+# Specific directory rules: Keep scripts, ignore data
+tireconnect/*
+!tireconnect/**/*.py
+gap-analysis/*
+!gap-analysis/**/*.py
+images/*
+!images/**/*.py
+method-wheels/*
+!method-wheels/**/*.py
+nitto-map/*
+!nitto-map/**/*.py
