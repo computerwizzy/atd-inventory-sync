@@ -22,6 +22,7 @@ scratch/
 *.webp
 *.zip
 *.log
+*.liquid
 
 # Allow GitHub Actions
 !.github/workflows/*.yml
@@ -34,7 +35,7 @@ scratch/
 # Exceptions for necessary frontend files
 !shopify/variant_redirect_snippet.liquid
 
-# Specific directory rules: Keep scripts, ignore data
+# Specific directory rules: Keep scripts, ignore everything else
 tireconnect/*
 !tireconnect/**/*.py
 gap-analysis/*
