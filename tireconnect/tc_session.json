@@ -1,0 +1,312 @@
+{
+  "final_url": "https://wl.tireconnect.ca/backend.php/dashboard",
+  "cookies": [
+    {
+      "name": "_csrf",
+      "value": "Vf44IUUtyHj5axBYy34CKpQ6",
+      "domain": "auth.tireconnect.ca",
+      "path": "/usernamepassword/login",
+      "expires": 1777864489.990949,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_gid",
+      "value": "GA1.2.2120561666.1777000485",
+      "domain": ".tireconnect.ca",
+      "path": "/",
+      "expires": 1777086884,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.1340296446.1777000485",
+      "domain": ".tireconnect.ca",
+      "path": "/",
+      "expires": 1811560484.709027,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_X4XCL3E3TY",
+      "value": "GS2.1.s1777000484$o1$g0$t1777000489$j55$l0$h0",
+      "domain": ".tireconnect.ca",
+      "path": "/",
+      "expires": 1811560489.558373,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "did",
+      "value": "s%3Av0%3A122aed6d-fd68-4d1d-b8fe-add9b7fb5329.T0QWPSvsz3TzDuUEAS7nghw%2FCYYzoBkxgpJV1lbvF7c",
+      "domain": "auth.tireconnect.ca",
+      "path": "/",
+      "expires": 1808558088.903565,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "did_compat",
+      "value": "s%3Av0%3A122aed6d-fd68-4d1d-b8fe-add9b7fb5329.T0QWPSvsz3TzDuUEAS7nghw%2FCYYzoBkxgpJV1lbvF7c",
+      "domain": "auth.tireconnect.ca",
+      "path": "/",
+      "expires": 1808558088.903666,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "auth0",
+      "value": "s%3A71NS_wwBmaK1S7PBpc-0wOLXRE_uwpgh.%2BpvlV6EMnPbVMd3sqCGM2KzvBDN0JDSz35Fned49%2BL4",
+      "domain": "auth.tireconnect.ca",
+      "path": "/",
+      "expires": 1777259707.557329,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "auth0_compat",
+      "value": "s%3A71NS_wwBmaK1S7PBpc-0wOLXRE_uwpgh.%2BpvlV6EMnPbVMd3sqCGM2KzvBDN0JDSz35Fned49%2BL4",
+      "domain": "auth.tireconnect.ca",
+      "path": "/",
+      "expires": 1777259707.557398,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "gt_admin",
+      "value": "h2m7cshses6p4deup891hj96hc",
+      "domain": "wl.tireconnect.ca",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "PHPSESSID",
+      "value": "k241u0ip8luir3695le0q8forh",
+      "domain": "analytics.tireconnect.ca",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_cfuvid",
+      "value": "KeIjWlxX8bvhDqwaRQMd7sMoD06OJQOaa6oAjtIC9GM-1777000509.0484598-1.0.1.1-awN4uqDaQaWzi2yj83O4BnrOQgawjtkQ1YKlC4pb6gs",
+      "domain": ".highcharts.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    }
+  ],
+  "storage_state": {
+    "cookies": [
+      {
+        "name": "_csrf",
+        "value": "Vf44IUUtyHj5axBYy34CKpQ6",
+        "domain": "auth.tireconnect.ca",
+        "path": "/usernamepassword/login",
+        "expires": 1777864489.990949,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "_gid",
+        "value": "GA1.2.2120561666.1777000485",
+        "domain": ".tireconnect.ca",
+        "path": "/",
+        "expires": 1777086884,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "_ga",
+        "value": "GA1.1.1340296446.1777000485",
+        "domain": ".tireconnect.ca",
+        "path": "/",
+        "expires": 1811560484.709027,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "_ga_X4XCL3E3TY",
+        "value": "GS2.1.s1777000484$o1$g0$t1777000489$j55$l0$h0",
+        "domain": ".tireconnect.ca",
+        "path": "/",
+        "expires": 1811560489.558373,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "did",
+        "value": "s%3Av0%3A122aed6d-fd68-4d1d-b8fe-add9b7fb5329.T0QWPSvsz3TzDuUEAS7nghw%2FCYYzoBkxgpJV1lbvF7c",
+        "domain": "auth.tireconnect.ca",
+        "path": "/",
+        "expires": 1808558088.903565,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "did_compat",
+        "value": "s%3Av0%3A122aed6d-fd68-4d1d-b8fe-add9b7fb5329.T0QWPSvsz3TzDuUEAS7nghw%2FCYYzoBkxgpJV1lbvF7c",
+        "domain": "auth.tireconnect.ca",
+        "path": "/",
+        "expires": 1808558088.903666,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "auth0",
+        "value": "s%3A71NS_wwBmaK1S7PBpc-0wOLXRE_uwpgh.%2BpvlV6EMnPbVMd3sqCGM2KzvBDN0JDSz35Fned49%2BL4",
+        "domain": "auth.tireconnect.ca",
+        "path": "/",
+        "expires": 1777259707.557329,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+      },
+      {
+        "name": "auth0_compat",
+        "value": "s%3A71NS_wwBmaK1S7PBpc-0wOLXRE_uwpgh.%2BpvlV6EMnPbVMd3sqCGM2KzvBDN0JDSz35Fned49%2BL4",
+        "domain": "auth.tireconnect.ca",
+        "path": "/",
+        "expires": 1777259707.557398,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "gt_admin",
+        "value": "h2m7cshses6p4deup891hj96hc",
+        "domain": "wl.tireconnect.ca",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": false,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "PHPSESSID",
+        "value": "k241u0ip8luir3695le0q8forh",
+        "domain": "analytics.tireconnect.ca",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": true,
+        "secure": false,
+        "sameSite": "Lax"
+      },
+      {
+        "name": "_cfuvid",
+        "value": "KeIjWlxX8bvhDqwaRQMd7sMoD06OJQOaa6oAjtIC9GM-1777000509.0484598-1.0.1.1-awN4uqDaQaWzi2yj83O4BnrOQgawjtkQ1YKlC4pb6gs",
+        "domain": ".highcharts.com",
+        "path": "/",
+        "expires": -1,
+        "httpOnly": true,
+        "secure": true,
+        "sameSite": "None"
+      }
+    ],
+    "origins": [
+      {
+        "origin": "https://app.tireconnect.ca",
+        "localStorage": [
+          {
+            "name": "tcwlw_9edd63c923fee5d8978fc98b646d2e56_prefix",
+            "value": "{\"data\":\"tcwlw_9edd63c923fee5d8978fc98b646d2e56_5.6.2.4_\"}"
+          },
+          {
+            "name": "tcwlw_9edd63c923fee5d8978fc98b646d2e56_5.6.2.4_locationId",
+            "value": "{\"data\":29531}"
+          },
+          {
+            "name": "tcwlw_9edd63c923fee5d8978fc98b646d2e56_sessionId",
+            "value": "{\"data\":\"d84e24a90ba247056598548f51fc4b\"}"
+          },
+          {
+            "name": "tcwlw_9edd63c923fee5d8978fc98b646d2e56_sessionIdCreatedAt",
+            "value": "{\"data\":1777000485205}"
+          },
+          {
+            "name": "persist:tcwlw_9edd63c923fee5d8978fc98b646d2e56_5.6.2.4_",
+            "value": "{\"layout\":\"{\\\"layout\\\":\\\"standard\\\"}\",\"searchTires\":\"{\\\"searchBy\\\":\\\"size\\\"}\",\"searchWheels\":\"{\\\"searchBy\\\":\\\"vehicle\\\"}\",\"visualiserUI\":\"{\\\"color\\\":{}}\",\"cart\":\"{\\\"openedTab\\\":null,\\\"opened\\\":false,\\\"wheels\\\":{},\\\"tires\\\":{},\\\"cartExpiresAt\\\":null,\\\"autoRemovedWheels\\\":{},\\\"autoRemovedTires\\\":{}}\",\"supplierVehicle\":\"{\\\"baseVehicle\\\":{},\\\"vehicle\\\":{}}\",\"supplierAddons\":\"{\\\"addons\\\":{}}\",\"auth\":\"{\\\"opened\\\":false,\\\"token\\\":\\\"\\\",\\\"tokenExpireAt\\\":0}\",\"baseProduct\":\"{\\\"baseProduct\\\":\\\"tire\\\"}\",\"_persist\":\"{\\\"version\\\":-1,\\\"rehydrated\\\":true}\"}"
+          }
+        ]
+      },
+      {
+        "origin": "https://wl.tireconnect.ca",
+        "localStorage": [
+          {
+            "name": "aea3ed96-5970-40c5-97d2-e126a20125f7",
+            "value": "{\"isUserCreateSent\":false,\"lastActivitySent\":\"2026-04-24T03:14:51.732Z\",\"subDomainName\":\"tireconnect\"}"
+          }
+        ]
+      },
+      {
+        "origin": "https://auth.tireconnect.ca",
+        "localStorage": [
+          {
+            "name": "aea3ed96-5970-40c5-97d2-e126a20125f7",
+            "value": "{\"isUserCreateSent\":false,\"subDomainName\":\"tireconnect\",\"lastActivitySent\":\"2026-04-24T03:14:51.732Z\"}"
+          }
+        ]
+      },
+      {
+        "origin": "https://wchat.freshchat.com",
+        "localStorage": [
+          {
+            "name": "aea3ed96-5970-40c5-97d2-e126a20125f7",
+            "value": "{\"isUserCreateSent\":false,\"lastActivitySent\":\"2026-04-24T03:14:51.732Z\",\"subDomainName\":\"tireconnect\"}"
+          },
+          {
+            "name": "debug",
+            "value": "undefined"
+          },
+          {
+            "name": "hop-aea3ed96-5970-40c5-97d2-e126a20125f7",
+            "value": "{\"hop\":\"1777000508889\"}"
+          }
+        ]
+      },
+      {
+        "origin": "https://analytics.tireconnect.ca",
+        "localStorage": [
+          {
+            "name": "filters_data_client",
+            "value": "{\"deleted_at\":false,\"is_test\":-1,\"client_type\":-1,\"e_commerce\":-1,\"show_price\":-1,\"device\":[-1],\"source\":[-1],\"supplier_name\":[-1],\"location_tags\":[-1],\"brand_name\":[-1],\"created_at\":{\"applied\":{},\"from\":\"2026-01-01T06:00:00.000Z\",\"to\":\"2026-05-01T04:59:59.999Z\",\"type\":\"last-3-months\"},\"market\":{\"province\":{\"applied\":{},\"countries\":[-1],\"provinces\":[-1],\"cities\":[-1]},\"zip\":{\"applied\":{},\"name\":\"\",\"radius\":\"\",\"lat\":0,\"lng\":0},\"client\":{\"applied\":{},\"clients\":[-1],\"dealers\":[-1],\"locations\":[-1]}}}"
+          },
+          {
+            "name": "userId",
+            "value": "5910"
+          },
+          {
+            "name": "filters_opened",
+            "value": "false"
+          },
+          {
+            "name": "version",
+            "value": "v0.5.1-dev. (2026-04-24 03:04:08)"
+          }
+        ]
+      }
+    ]
+  }
+}

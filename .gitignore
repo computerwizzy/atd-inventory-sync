@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.pyc
+logs/
+feeds/
+scratch/
+shopify/*.csv
+shopify/*.json
+shopify/*.liquid
+!shopify/variant_redirect_snippet.liquid
+.claude/
+.gemini/
