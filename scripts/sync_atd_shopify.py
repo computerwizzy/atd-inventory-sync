@@ -30,11 +30,16 @@ logging.basicConfig(
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # --- Configurations ---
-# FTP
+# ATD FTP (source)
 FTP_HOST = os.environ.get('ATD_FTP_HOST')
 FTP_USER = os.environ.get('ATD_FTP_USER')
 FTP_PASS = os.environ.get('ATD_FTP_PASS')
 FTP_DIR = os.environ.get('ATD_FTP_DIR', '/uploads/wheels_below_retail/')
+
+# WBR FTP (destination)
+WBR_FTP_HOST = os.environ.get('FTP_HOST')
+WBR_FTP_USER = os.environ.get('FTP_USER')
+WBR_FTP_PASS = os.environ.get('FTP_PASS')
 
 # Shopify
 SHOPIFY_STORE_URL = os.environ.get('SHOPIFY_STORE_URL')
@@ -94,8 +99,12 @@ def parse_price_list(filename):
             for row in reader:
                 sku = clean_atd_val(row.get(' Oracle No'))
                 map_price = clean_atd_val(row.get(' MAP'))
+                brand = clean_atd_val(row.get(' Manufacturer'))
                 if sku:
-                    price_data[sku] = float(map_price) if map_price else 0.0
+                    price_data[sku] = {
+                        'map': float(map_price) if map_price else 0.0,
+                        'brand': brand.upper()
+                    }
         return price_data
     except Exception as e:
         logging.error(f"Error parsing price list: {e}")
@@ -174,13 +183,18 @@ def main():
     atd_price_map = parse_price_list(price_local)
     wp_price_map = parse_wp_price_list(WP_PRICE_FILE)
     
-    # Combine maps (take the highest MAP found between both)
+    # Combine maps (take the highest MAP found between both, preserving brand for validation)
     combined_price_map = {}
     all_skus = set(atd_price_map.keys()) | set(wp_price_map.keys())
     for sku in all_skus:
-        atd_p = atd_price_map.get(sku, 0.0)
+        atd_data = atd_price_map.get(sku, {'map': 0.0, 'brand': ""})
         wp_p = wp_price_map.get(sku, 0.0)
-        combined_price_map[sku] = max(atd_p, wp_p)
+        
+        # Determine highest price and associated brand
+        if wp_p > atd_data['map']:
+            combined_price_map[sku] = {'map': wp_p, 'brand': ""} # WP brand matching not implemented yet
+        else:
+            combined_price_map[sku] = atd_data
     
     inventory_qty = defaultdict(int)
     with open(inv_local, 'r', encoding='utf-8') as f:
@@ -198,7 +212,15 @@ def main():
         query getVariants($cursor: String) {
           productVariants(first: 250, after: $cursor) {
             pageInfo { hasNextPage endCursor }
-            edges { node { id sku price inventoryItem { id } } }
+            edges { 
+              node { 
+                id 
+                sku 
+                price 
+                inventoryItem { id } 
+                product { vendor }
+              } 
+            }
           }
         }
         """
@@ -207,7 +229,14 @@ def main():
         variants = res.get('data', {}).get('productVariants', {}).get('edges', [])
         for edge in variants:
             node = edge['node']
-            if node['sku']: shopify_data[node['sku']] = node
+            sku = node['sku']
+            if sku:
+                shopify_data[sku] = {
+                    'id': node['id'],
+                    'price': node['price'],
+                    'inventoryItemId': node['inventoryItem']['id'],
+                    'brand': node['product']['vendor'].upper() if node['product']['vendor'] else ""
+                }
         page_info = res.get('data', {}).get('productVariants', {}).get('pageInfo', {})
         has_next_page = page_info.get('hasNextPage', False)
         cursor = page_info.get('endCursor')
@@ -215,20 +244,32 @@ def main():
     items_to_set_qty = []
     items_to_fix_price = []
     
-    for sku, node in shopify_data.items():
-        # Inventory Sync
+    for sku, s_node in shopify_data.items():
+        # Inventory Sync (Requires SKU Match)
         if sku in inventory_qty:
             items_to_set_qty.append({
-                'inventoryItemId': node['inventoryItem']['id'],
+                'inventoryItemId': s_node['inventoryItemId'],
                 'locationId': SHOPIFY_LOCATION_ID,
                 'quantity': inventory_qty[sku]
             })
             
-        # Price Sync (STRICT EXACT MATCH ONLY)
+        # Price Sync (STRICT SKU + BRAND MATCH)
         if sku in combined_price_map:
-            map_price = combined_price_map[sku]
-            if map_price > 0 and float(node['price']) < map_price - 0.01:
-                items_to_fix_price.append({'id': node['id'], 'new_price': map_price})
+            price_data = combined_price_map[sku]
+            map_price = price_data['map']
+            a_brand = price_data['brand']
+            s_brand = s_node['brand']
+            
+            # Brand matching: Only enforce if brand is present in feed
+            brand_match = True
+            if a_brand:
+                brand_match = (a_brand in s_brand or s_brand in a_brand)
+            
+            if brand_match:
+                if map_price > 0 and float(s_node['price']) < map_price - 0.01:
+                    items_to_fix_price.append({'id': s_node['id'], 'new_price': map_price})
+            else:
+                logging.warning(f"Brand mismatch for SKU {sku}: Shopify '{s_brand}' vs ATD '{a_brand}'. Skipping price sync.")
 
     if items_to_set_qty:
         logging.info(f"Syncing inventory for {len(items_to_set_qty)} items...")
@@ -245,7 +286,19 @@ def main():
     if items_to_fix_price:
         logging.info(f"Fixing {len(items_to_fix_price)} prices below MAP...")
         update_shopify_prices(items_to_fix_price)
-        
+
+    # Upload ATD inventory feed to WBR FTP
+    try:
+        logging.info(f"Uploading ATD_Inventory.csv to {WBR_FTP_HOST}...")
+        ftp = ftplib.FTP(WBR_FTP_HOST, timeout=60)
+        ftp.login(WBR_FTP_USER, WBR_FTP_PASS)
+        with open(inv_local, 'rb') as f:
+            ftp.storbinary('STOR ATD_Inventory.csv', f)
+        ftp.quit()
+        logging.info("ATD_Inventory.csv uploaded to ftp.wheelsbelowretail.com")
+    except Exception as e:
+        logging.error(f"WBR FTP upload error: {e}")
+
     logging.info(f"Sync complete in {datetime.datetime.now() - start_time}")
 
 if __name__ == "__main__":
