@@ -35,4 +35,4 @@ jobs:
           FTP_HOST: ${{ secrets.FTP_HOST }}
           FTP_USER: ${{ secrets.FTP_USER }}
           FTP_PASS: ${{ secrets.FTP_PASS }}
-        run: python scripts/sync_atd_shopify.py
+        run: python scripts/sync_atd_qty_only.py

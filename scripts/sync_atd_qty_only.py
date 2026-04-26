@@ -30,11 +30,16 @@ logging.basicConfig(
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 # --- Configurations ---
-# FTP
+# ATD FTP (source)
 FTP_HOST = os.environ.get('ATD_FTP_HOST')
 FTP_USER = os.environ.get('ATD_FTP_USER')
 FTP_PASS = os.environ.get('ATD_FTP_PASS')
 FTP_DIR = os.environ.get('ATD_FTP_DIR', '/uploads/wheels_below_retail/')
+
+# WBR FTP (destination)
+WBR_FTP_HOST = os.environ.get('FTP_HOST')
+WBR_FTP_USER = os.environ.get('FTP_USER')
+WBR_FTP_PASS = os.environ.get('FTP_PASS')
 
 # Shopify
 SHOPIFY_STORE_URL = os.environ.get('SHOPIFY_STORE_URL')
@@ -160,7 +165,19 @@ def main():
         logging.info("Inventory sync complete.")
     else:
         logging.info("No matching SKUs found to update.")
-        
+
+    # Upload ATD inventory feed to WBR FTP
+    try:
+        logging.info(f"Uploading ATD_Inventory.csv to {WBR_FTP_HOST}...")
+        ftp = ftplib.FTP(WBR_FTP_HOST, timeout=60)
+        ftp.login(WBR_FTP_USER, WBR_FTP_PASS)
+        with open(inv_local, 'rb') as f:
+            ftp.storbinary('STOR ATD_Inventory.csv', f)
+        ftp.quit()
+        logging.info("ATD_Inventory.csv uploaded to ftp.wheelsbelowretail.com")
+    except Exception as e:
+        logging.error(f"WBR FTP upload error: {e}")
+
     logging.info(f"Sync complete in {datetime.datetime.now() - start_time}")
 
 if __name__ == "__main__":
