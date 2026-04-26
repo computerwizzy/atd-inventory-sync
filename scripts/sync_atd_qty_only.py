@@ -46,7 +46,35 @@ WHEEL_BRANDS = {
     'OEP', 'Pacer', 'Platinum', 'TIS', 'TIS Motorsports', 'Ultra'
 }
 
-CSV_FIELDS = ['Brand', 'Model', 'Pn', 'MFG', 'Price', 'Retail', 'Inventory']
+CSV_FIELDS = ['Brand', 'Model', 'Pn', 'MFG', 'Price', 'MAP', 'Inventory']
+
+PRICE_FILE = 'pricefile_for_location_573314.csv'
+
+
+def clean_val(val):
+    if not val:
+        return ''
+    val = val.strip().replace('$', '').replace(',', '')
+    import re
+    m = re.match(r'="(.+)"', val)
+    return m.group(1) if m else val
+
+
+def parse_price_file(local_path):
+    prices = {}
+    if not os.path.exists(local_path):
+        return prices
+    with open(local_path, 'r', encoding='utf-8') as f:
+        for row in csv.DictReader(f):
+            sku = clean_val(row.get(' Oracle No', ''))
+            price = clean_val(row.get(' Price', ''))
+            map_p = clean_val(row.get(' MAP', ''))
+            if sku:
+                prices[sku] = {
+                    'price': f"{float(price):.2f}" if price else '0.00',
+                    'map':   f"{float(map_p):.2f}" if map_p else '0.00',
+                }
+    return prices
 
 
 def download_ftp_file(remote_name, local_name):
@@ -125,9 +153,14 @@ def main():
         logging.error("Could not find latest inventory file on FTP.")
         return
 
-    inv_local = os.path.join(FEED_DIR, 'latest_atd_inventory.csv')
+    inv_local   = os.path.join(FEED_DIR, 'latest_atd_inventory.csv')
+    price_local = os.path.join(FEED_DIR, 'pricefile_for_location_573314.csv')
+
     if not download_ftp_file(inv_remote, inv_local):
         return
+    download_ftp_file(PRICE_FILE, price_local)
+    price_map = parse_price_file(price_local)
+    logging.info(f"Price file: {len(price_map)} SKUs loaded")
 
     # Parse inventory and split into tires/wheels
     inventory_qty = defaultdict(int)
@@ -153,13 +186,14 @@ def main():
             continue
         seen.add(sku)
         total_qty = inventory_qty[sku]
+        p = price_map.get(sku, {})
         entry = {
             'Brand':     brand,
             'Model':     row.get('ProductDescription', '').strip(),
             'Pn':        sku,
             'MFG':       row.get('ManufacturerPartNumber', '').strip(),
-            'Price':     '0.00',
-            'Retail':    '0',
+            'Price':     p.get('price', '0.00'),
+            'MAP':       p.get('map', '0.00'),
             'Inventory': total_qty
         }
         if brand in WHEEL_BRANDS:
