@@ -17,7 +17,7 @@ SRC_FILE  = '1290215.csv'
 DST_HOST  = os.environ.get('FTP_HOST')
 DST_USER  = os.environ.get('FTP_USER')
 DST_PASS  = os.environ.get('FTP_PASS')
-DST_FILE  = 'USAF_Tires_Inventory.csv'
+DST_FILE  = 'US_AutoForce_Inventory.csv'
 
 OUT_FILE  = os.path.join(BASE_DIR, 'scripts', 'scratch', DST_FILE)
 
