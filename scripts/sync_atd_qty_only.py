@@ -66,9 +66,9 @@ def parse_price_file(local_path):
         return prices
     with open(local_path, 'r', encoding='utf-8') as f:
         for row in csv.DictReader(f):
-            sku = clean_val(row.get(' Oracle No', ''))
-            price = clean_val(row.get(' Price', ''))
-            map_p = clean_val(row.get(' MAP', ''))
+            sku = clean_val(row.get(' Supplier No', ''))
+            price = clean_val(row.get(' Price', '').replace('$', ''))
+            map_p = clean_val(row.get(' MAP', '').replace('$', ''))
             if sku:
                 prices[sku] = {
                     'price': f"{float(price):.2f}" if price else '0.00',
