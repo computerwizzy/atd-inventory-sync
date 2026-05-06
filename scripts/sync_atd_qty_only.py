@@ -147,6 +147,8 @@ def set_inventory_rest(inventory_item_id, location_id, available):
             if resp.status_code == 429:
                 time.sleep(5)
                 continue
+            if resp.status_code == 422:
+                return None  # Item not tracked — skip silently
             if resp.status_code not in (200, 201):
                 logging.error(f"REST set inventory failed {resp.status_code}: {resp.text[:200]}")
             return resp.json()
