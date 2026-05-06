@@ -38,7 +38,7 @@ WBR_FTP_PASS = os.environ.get('FTP_PASS')
 # Shopify
 SHOPIFY_STORE_URL    = os.environ.get('SHOPIFY_STORE_URL')
 SHOPIFY_ACCESS_TOKEN = os.environ.get('SHOPIFY_ACCESS_TOKEN')
-SHOPIFY_LOCATION_ID  = os.environ.get('SHOPIFY_LOCATION_ID', 'gid://shopify/Location/91638464747')
+SHOPIFY_LOCATION_ID  = 'gid://shopify/Location/91638464747'  # ATD location
 
 WHEEL_BRANDS = {
     'Advanti Racing', 'Boyd Coddington', 'Cragar', 'Dropstars', 'Dropstars Trail Series',
