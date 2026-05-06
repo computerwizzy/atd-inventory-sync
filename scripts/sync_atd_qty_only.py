@@ -43,7 +43,7 @@ WHEEL_BRANDS = {
     'Advanti Racing', 'Boyd Coddington', 'Cragar', 'Dropstars', 'Dropstars Trail Series',
     'Edge Off Road', 'Edge Street', 'Fittipaldi', 'Focal', 'Gear Off Road', 'Konig',
     'Mamba', 'Maxxim', 'Mickey Thompson', 'Motiv', 'Motiv Offroad', 'OE Performance',
-    'OEP', 'Pacer', 'Platinum', 'TIS', 'TIS Motorsports', 'Ultra'
+    'OEP', 'Pacer', 'Platinum', 'TIS', 'TIS Motorsports', 'Ultra', 'Raceline', 'Raceline Forged'
 }
 
 CSV_FIELDS = ['Brand', 'Model', 'Pn', 'MFG', 'Price', 'MAP', 'Inventory']
@@ -240,13 +240,17 @@ def main():
         cursor = page_info.get('endCursor')
 
     items_to_set_qty = []
+    zeroed = 0
     for sku, node in shopify_data.items():
-        if sku in inventory_qty:
-            items_to_set_qty.append({
-                'inventoryItemId': node['inventoryItem']['id'],
-                'locationId': SHOPIFY_LOCATION_ID,
-                'quantity': inventory_qty[sku]
-            })
+        qty = inventory_qty.get(sku, 0)
+        if qty == 0 and sku not in inventory_qty:
+            zeroed += 1
+        items_to_set_qty.append({
+            'inventoryItemId': node['inventoryItem']['id'],
+            'locationId': SHOPIFY_LOCATION_ID,
+            'quantity': qty
+        })
+    logging.info(f"Updating {len(items_to_set_qty)} variants ({zeroed} zeroed — not in ATD feed)")
 
     if items_to_set_qty:
         logging.info(f"Syncing inventory for {len(items_to_set_qty)} items...")
@@ -260,7 +264,7 @@ def main():
             shopify_graphql_request(mutation, {"input": {"reason": "correction", "setQuantities": batch}})
         logging.info("Inventory sync complete.")
     else:
-        logging.info("No matching SKUs found to update.")
+        logging.info("No Shopify variants found to update.")
 
     # Upload both CSVs to WBR FTP
     upload_to_wbr(tires_file, 'ATD_Tires_Inventory.csv')
