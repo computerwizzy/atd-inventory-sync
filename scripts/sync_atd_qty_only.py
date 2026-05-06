@@ -250,7 +250,8 @@ def main():
             })
 
     # Zero out only items that have qty > 0 at ATD location but are no longer in ATD feed
-    logging.info("Checking ATD location for stale quantities...")
+    logging.info(f"Checking ATD location {SHOPIFY_LOCATION_ID} for stale quantities...")
+    stale_count = 0
     has_next_page = True
     cursor = None
     while has_next_page:
@@ -271,14 +272,21 @@ def main():
         """
         res = shopify_graphql_request(query, {'location': SHOPIFY_LOCATION_ID, 'cursor': cursor})
         if not res or 'data' not in res:
+            logging.error("Failed to fetch ATD location inventory levels")
             break
-        levels = res['data'].get('location', {}).get('inventoryLevels', {})
+        location_data = res['data'].get('location') or {}
+        if not location_data:
+            logging.error(f"Location {SHOPIFY_LOCATION_ID} not found in Shopify — check SHOPIFY_LOCATION_ID secret")
+            break
+        levels = location_data.get('inventoryLevels', {})
         for edge in levels.get('edges', []):
             node = edge['node']
             qty = next((q['quantity'] for q in node.get('quantities', []) if q['name'] == 'available'), 0)
             sku = node['item'].get('sku', '')
             item_id = node['item'].get('id')
             if qty > 0 and sku and sku not in inventory_qty:
+                stale_count += 1
+                logging.info(f"Stale SKU {sku}: qty={qty} at ATD location, zeroing")
                 items_to_set_qty.append({
                     'inventoryItemId': item_id,
                     'locationId': SHOPIFY_LOCATION_ID,
@@ -288,7 +296,7 @@ def main():
         has_next_page = page_info.get('hasNextPage', False)
         cursor = page_info.get('endCursor')
 
-    logging.info(f"Total updates: {len(items_to_set_qty)}")
+    logging.info(f"Stale items to zero: {stale_count} | ATD updates: {len(items_to_set_qty)}")
 
     if items_to_set_qty:
         logging.info(f"Syncing inventory for {len(items_to_set_qty)} items...")
@@ -299,10 +307,14 @@ def main():
               inventorySetOnHandQuantities(input: $input) { userErrors { message } }
             }
             """
-            shopify_graphql_request(mutation, {"input": {"reason": "correction", "setQuantities": batch}})
+            result = shopify_graphql_request(mutation, {"input": {"reason": "correction", "setQuantities": batch}})
+            if result:
+                errors = result.get('data', {}).get('inventorySetOnHandQuantities', {}).get('userErrors', [])
+                if errors:
+                    logging.error(f"Mutation userErrors batch {i//100 + 1}: {errors}")
         logging.info("Inventory sync complete.")
     else:
-        logging.info("No Shopify variants found to update.")
+        logging.info("No items to update.")
 
     # Upload both CSVs to WBR FTP
     upload_to_wbr(tires_file, 'ATD_Tires_Inventory.csv')
