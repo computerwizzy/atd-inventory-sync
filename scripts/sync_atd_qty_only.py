@@ -239,18 +239,56 @@ def main():
         has_next_page = page_info.get('hasNextPage', False)
         cursor = page_info.get('endCursor')
 
+    # Update SKUs currently in ATD feed
     items_to_set_qty = []
-    zeroed = 0
     for sku, node in shopify_data.items():
-        qty = inventory_qty.get(sku, 0)
-        if qty == 0 and sku not in inventory_qty:
-            zeroed += 1
-        items_to_set_qty.append({
-            'inventoryItemId': node['inventoryItem']['id'],
-            'locationId': SHOPIFY_LOCATION_ID,
-            'quantity': qty
-        })
-    logging.info(f"Updating {len(items_to_set_qty)} variants ({zeroed} zeroed — not in ATD feed)")
+        if sku in inventory_qty:
+            items_to_set_qty.append({
+                'inventoryItemId': node['inventoryItem']['id'],
+                'locationId': SHOPIFY_LOCATION_ID,
+                'quantity': inventory_qty[sku]
+            })
+
+    # Zero out only items that have qty > 0 at ATD location but are no longer in ATD feed
+    logging.info("Checking ATD location for stale quantities...")
+    has_next_page = True
+    cursor = None
+    while has_next_page:
+        query = """
+        query getATDLevels($location: ID!, $cursor: String) {
+          location(id: $location) {
+            inventoryLevels(first: 250, after: $cursor) {
+              pageInfo { hasNextPage endCursor }
+              edges {
+                node {
+                  quantities(names: ["available"]) { name quantity }
+                  item { id sku }
+                }
+              }
+            }
+          }
+        }
+        """
+        res = shopify_graphql_request(query, {'location': SHOPIFY_LOCATION_ID, 'cursor': cursor})
+        if not res or 'data' not in res:
+            break
+        levels = res['data'].get('location', {}).get('inventoryLevels', {})
+        for edge in levels.get('edges', []):
+            node = edge['node']
+            qty = next((q['quantity'] for q in node.get('quantities', []) if q['name'] == 'available'), 0)
+            sku = node['item'].get('sku', '')
+            item_id = node['item'].get('id')
+            if qty > 0 and sku and sku not in inventory_qty:
+                items_to_set_qty.append({
+                    'inventoryItemId': item_id,
+                    'locationId': SHOPIFY_LOCATION_ID,
+                    'quantity': 0
+                })
+        page_info = levels.get('pageInfo', {})
+        has_next_page = page_info.get('hasNextPage', False)
+        cursor = page_info.get('endCursor')
+
+    logging.info(f"Total updates: {len(items_to_set_qty)}")
 
     if items_to_set_qty:
         logging.info(f"Syncing inventory for {len(items_to_set_qty)} items...")
